@@ -1,9 +1,9 @@
 #include "MotorControllers.h"
 
-MotorControllers::MotorControllers(int rightMotorDigitalPin, int leftMotorDigitalPin){
+MotorControllers::MotorControllers(){
 
-  rightMotor.attach(rightMotorDigitalPin);
-  leftMotor.attach(leftMotorDigitalPin);
+  rightMotor.attach(RIGHT_MOTOR);
+  leftMotor.attach(LEFT_MOTOR);
 
 
 }
@@ -26,3 +26,4 @@ void MotorControllers::rotateRight(){
   leftMotor.write(-50);
 
 }
+

@@ -5,10 +5,15 @@
 #include <Servo.h>    // servo library -- vexMotor relies on the Servo library
 #include <vexMotor.h> // includes the vexMotor library (must also include Servo.h)
 
+//pin 9 is right, pin 8 is left
+#define RIGHT_MOTOR 9
+#define LEFT_MOTOR 8
+    
+#define Right
 class MotorControllers
 {
   public:
-    MotorControllers(int rightMotorDigitalPin, int leftMotorDigitalPin);
+    MotorControllers();
     void moveForward();
     void stopMove();
     void rotateLeft();
@@ -19,3 +24,4 @@ class MotorControllers
 };
 
 #endif
+
