@@ -3,8 +3,8 @@
 
 #include "Arduino.h"
 
-#define MAX_X 60
-#define MAX_Y 60
+#define MAX_X 2
+#define MAX_Y 2
 
 const int NORTH = 0;
 const int EAST = 1;
@@ -57,26 +57,26 @@ class InternalMap{
 	public:
 		//get a direction you have not gone before
 		InternalMap();
-		int giveNewSafeSpot(int x , int y, char notAllowedPaths);
+//		int giveNewSafeSpot(int x , int y, char notAllowedPaths);
     void updateStep(int &x, int &y, int direction);
     
 	private:
 		//2 d array of positions
-		char map[MAX_Y][MAX_X];
-		char possibiltiesMap[8][8] = 
-		{
-			{'A','G','F','E','D','C','B','H'},
-			{'G','G','D','C','D','C','H','H'},
-			{'F','D','F','B','D','H','B','H'},
-			{'E','C','B','E','H','C','B','H'},
-			{'D','D','D','H','D','H','H','H'},
-			{'C','C','H','C','H','C','H','H'},
-			{'B','H','B','B','H','H','B','H'},
-			{'H','H','H','H','H','H','H','H'}
-		};
-		void updatePathTaken(int x , int y, int newPathTaken);
-		int giveDirectionFromSubsets(char encodedSubset);
-		int encodedValueToColumnNumber(char val);
+//		char map[MAX_Y][MAX_X];
+//		char possibiltiesMap[8][8] = 
+//		{
+//			{'A','G','F','E','D','C','B','H'},
+//			{'G','G','D','C','D','C','H','H'},
+//			{'F','D','F','B','D','H','B','H'},
+//			{'E','C','B','E','H','C','B','H'},
+//			{'D','D','D','H','D','H','H','H'},
+//			{'C','C','H','C','H','C','H','H'},
+//			{'B','H','B','B','H','H','B','H'},
+//			{'H','H','H','H','H','H','H','H'}
+//		};
+//		void updatePathTaken(int x , int y, int newPathTaken);
+//		int giveDirectionFromSubsets(char encodedSubset);
+//		int encodedValueToColumnNumber(char val);
 };
 
 #endif

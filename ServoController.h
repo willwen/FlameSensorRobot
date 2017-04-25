@@ -5,7 +5,7 @@
 #include <Arduino.h>
 #include <Servo.h>
 
-#define SERVO_PIN 11
+#define SERVO_PIN 10
 
 #define SERVO_STEP 1
 

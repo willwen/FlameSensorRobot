@@ -7,6 +7,7 @@
 #include <L3G.h>
 #include <LSM303.h>
 
+const float error = -.04; //error in each IMU reading every second
 
 class ComplimentaryIMU{
 	public:
@@ -22,12 +23,15 @@ class ComplimentaryIMU{
 		void gyroZero();
 		void Accel_Init();
 		void readVals();
+    void init();
+    long timer2 = 0;
+    void accountForError();
+
 	private:
 		float G_Dt = 0.020; // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
 
 		long timer = 0; //general purpose timer
 		long timer1 = 0;
-		long timer2 = 0;
     float G_gain=.00875; // gyros gain factor for 250deg/sec
 
 		float gyro_xold; //gyro cummulative x value

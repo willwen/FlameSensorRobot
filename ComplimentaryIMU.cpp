@@ -1,6 +1,10 @@
 #include "ComplimentaryIMU.h"
 
 ComplimentaryIMU::ComplimentaryIMU(){
+
+}
+
+void ComplimentaryIMU::init(){
    Wire.begin(); // i2c begin
    if (!gyro.init()){ // gyro init
        Serial.println("Failed to autodetect gyro type!");
@@ -14,16 +18,18 @@ ComplimentaryIMU::ComplimentaryIMU(){
    Accel_Init();
 }
 
-
 void ComplimentaryIMU::readVals(){
     // reads imu every 20ms
    if((millis()-timer)>=20)  
    {
      complimentaryFilter();
    }
-   // prints the gyro value once per second
-   if((millis()-timer2)>=1000)  
+//   Serial.println("Reading Vals");
+   // prints the gyro value once per half second
+   if((millis()-timer2)>=500)  
    {
+//     Serial.println("Printing Gyro");
+
      printGyro();
      //get vars gyro_x, gyro_y, gyro_z
      
@@ -157,4 +163,8 @@ void ComplimentaryIMU::complimentaryFilter()
         y_Acc = atan2(accel_x, accel_z) * 180 / PI;
         gyro_y = gyro_y * 0.98 + y_Acc * 0.02;
     }
+}
+void ComplimentaryIMU::accountForError(){
+  gyro_z = gyro_z - error;
+
 }
