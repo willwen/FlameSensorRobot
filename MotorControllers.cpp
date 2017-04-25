@@ -2,11 +2,15 @@
 
 MotorControllers::MotorControllers(){
 
-  rightMotor.attach(RIGHT_MOTOR);
-  leftMotor.attach(LEFT_MOTOR);
-
 
 }
+
+void MotorControllers::init(){
+  rightMotor.attach(9);
+  leftMotor.attach(8);
+  stopMove();
+}
+
 void MotorControllers::moveForward(){
   rightMotor.write(100);
   leftMotor.write(-100);

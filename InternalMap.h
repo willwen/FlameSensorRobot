@@ -1,13 +1,15 @@
 #ifndef InternalMap_h
 #define InternalMap_h
 
+#include "Arduino.h"
+
 #define MAX_X 60
 #define MAX_Y 60
 
-static int NORTH = 0;
-static int EAST = 1;
-static int SOUTH = 2;
-static int WEST = 3;
+const int NORTH = 0;
+const int EAST = 1;
+const int SOUTH = 2;
+const int WEST = 3;
 
 //encode all visited states with 3 possibilties:
 //forward, left and eight = 2^3 = 8 states

@@ -6,10 +6,9 @@
 #include <vexMotor.h> // includes the vexMotor library (must also include Servo.h)
 
 //pin 9 is right, pin 8 is left
-#define RIGHT_MOTOR 9
-#define LEFT_MOTOR 8
+const int RIGHT_MOTOR = 9;
+const int LEFT_MOTOR = 8;
     
-#define Right
 class MotorControllers
 {
   public:
@@ -18,6 +17,8 @@ class MotorControllers
     void stopMove();
     void rotateLeft();
     void rotateRight();
+    void init();
+
   private:
     vexMotor rightMotor;  // creates an instance of the vexMotor class
     vexMotor leftMotor;

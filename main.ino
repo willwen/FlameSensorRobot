@@ -2,11 +2,11 @@
 #include <Bounce2.h>
 #include "MotorControllers.h"
 #include "Encoder.h"
-#include "ComplimentaryIMU.h"
+//#include "ComplimentaryIMU.h"
 #include "FlameSensors.h"
 #include "ServoController.h"
 #include <ultrasonic.h>
-#include "InternalMap.h"
+//#include "InternalMap.h"
 
 #define STEP_SIZE 135
 #define ROTATION_STEP 180
@@ -40,13 +40,13 @@ ultrasonic leftUltrasonic(LEFT_ULTRASONIC_INPUT, LEFT_ULTRASONIC_OUTPUT);
 ultrasonic rightUltrasonic(RIGHT_ULTRASONIC_INPUT, RIGHT_ULTRASONIC_OUTPUT);
 Encoder leftEncoder(2,3); //on interrupt pins 2 and 3
 MotorControllers mc;
-InternalMap internalMap;
+//InternalMap internalMap;
 
-int x = 30;
-int y = 30;
+//int x = 30;
+//int y = 15;
 
 
-int direction = NORTH;
+//int direction = NORTH;
 
 FlameSensors flameSensors;
 ServoController servoController;
@@ -63,15 +63,19 @@ void setup()
     pinMode(PUSH_BUTTON, INPUT_PULLUP);
     startButtonDebouncer.attach(PUSH_BUTTON);
     startButtonDebouncer.interval(5);
+    mc.init();
+    servoController.init();
+    servoController.write(105);
 }
 
 void loop()
 {
    
-    servoController.doServoStep();
-    
+    Serial.println("state");
+    Serial.println(state);
     switch (state) {
-    case 0: {
+
+     case 0: {
         mc.moveForward();
         Serial.println("moving forward");
         Serial.println(leftEncoder.read());
@@ -80,7 +84,7 @@ void loop()
             mc.stopMove();
             Serial.println("completed forward step.");
             state = 5; //go check for flame after a step
-            internalMap.updateStep(x, y, direction);
+//            internalMap.updateStep(x, y, direction);
         }
         break;
 
@@ -93,6 +97,7 @@ void loop()
                 break;
             delay(250);
         }
+        Serial.println("broke out");
         state = 5;
         break;
     }
@@ -106,15 +111,10 @@ void loop()
             Serial.println("completed 90 deg left rotation.");
             mc.stopMove();
             state = 5; //complete a rotation, check flame
-
-            /*
-             *  static int NORTH = 0;
-                static int EAST = 1;
-                static int SOUTH = 2;
-                static int WEST = 3;
-             */
-             direction = (direction - 1) % 4;
-             internalMap.updateStep(x, y, direction);
+            
+//             direction = (direction - 1) % 4;
+//             if(direction < 0)
+//              direction = direction+4;
         }
         break;
     } // end case 2
@@ -127,19 +127,16 @@ void loop()
             leftEncoder.write(0);
             Serial.println("completed 90 deg right rotation.");
             mc.stopMove();
-            state = 5; //complete a rotation, check flame
-            /*
-             *  static int NORTH = 0;
-                static int EAST = 1;
-                static int SOUTH = 2;
-                static int WEST = 3;
-             */
-             direction = (direction + 1) % 4;
-             internalMap.updateStep(x, y, direction);
+            state = 5; //complete a rotation, check flame 
+//             direction = (direction + 1) % 4;
+//             if(direction < 0)
+//              direction = direction+4;
         }
         break;
     } //end case 3
     case 4: {
+        servoController.doServoStep();
+
         //flame detected, turn on fan
         //trigger relay
         digitalWrite(RELAY_DIGITAL_PIN, HIGH);
@@ -169,6 +166,7 @@ void loop()
     } //end case 4
     case 5: //check for flame
     {
+        Serial.println("~~~~~~~~~~~~~~STEP COMPLETED ~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         if (flameSensors.frontFlameDetected()) {
             //flame closeby, turn on fan
             state = 4;
@@ -185,73 +183,93 @@ void loop()
 
     } //end case 5
     case 6: {
-//            randomSeed(frontDist);//provide random numbers
-//            state = random(2, 4);
-//            Serial.println("random value");
-//            Serial.println(state);
 
         //read forward sensor
         float frontDist = frontUltrasonic.distance();
-        Serial.println("Sensor Reading:");
-        Serial.println(frontDist);
         float leftDist = leftUltrasonic.distance();
         float rightDist = rightUltrasonic.distance();
-        char notAllowedPaths = 'A';
+        Serial.println("Front Sensor Reading:");
+        Serial.println(frontDist);
+        Serial.println("Left Sensor Reading:");
+        Serial.println(leftDist);
+        Serial.println("Right Sensor Reading:");
+        Serial.println(rightDist);
+//        char notAllowedPaths = 'A';
         if (frontDist < FRONT_LAZER_THRESHOLD) { //obstacle detected, aka small range, aka small voltage
             //just go rotate 90 left because both flame sensors read nothing
-            notAllowedPaths = 'B';
+//            Serial.println("Because of front sensor obstacle, not allowed to 'b'");
+//            notAllowedPaths = 'B';
+
+            randomSeed(frontDist);//provide random numbers
+            state = random(2, 4);
+            Serial.println("random value");
+            Serial.println(random(2,4));
         }
-        if (leftDist < SIDE_LAZER_THRESHOLD) {
-          if(notAllowedPaths == 'B'){
-            notAllowedPaths = 'E';
-          }
-          else{
-            notAllowedPaths = 'C';
-          }
+        else if(leftDist<SIDE_LAZER_THRESHOLD || rightDist < SIDE_LAZER_THRESHOLD){
+          //do not go forward..
+//          notAllowedPaths = 'G';
+            randomSeed(leftDist +  rightDist);//provide random numbers
+            state = random(2, 4);
+            Serial.println("L + R : random value");
+            Serial.println(random(2,4));
         }
-        else if (rightDist < SIDE_LAZER_THRESHOLD) {
-            if (notAllowedPaths == 'A') // all allowed
-
-            else if(notAllowedPaths == 'B') //
-            else if (notAllowedPaths == 'C')
-
-            else if (notAllowedPaths == 'E')
-
-
+        else{
+          state = 0;
         }
+//        if (leftDist < SIDE_LAZER_THRESHOLD) {
+//          Serial.println("Because of left sensor obstacle");
+//          
+//          if(notAllowedPaths == 'B'){
+//            notAllowedPaths = 'E';
+//          }
+//          else{
+//            notAllowedPaths = 'C';
+//          }
+//          Serial.println(notAllowedPaths);
+//
+//        }
+//        else if (rightDist < SIDE_LAZER_THRESHOLD) {
+//            Serial.println("Because of left sensor obstacle");
+//
+//            if (notAllowedPaths == 'A') // all allowed
+//              notAllowedPaths = 'D';
+//            else if(notAllowedPaths == 'B')
+//              notAllowedPaths = 'F';
+//            else if (notAllowedPaths == 'C')
+//              notAllowedPaths = 'G';
+//            else if (notAllowedPaths == 'E')
+//              notAllowedPaths = 'H';
+//            Serial.println(notAllowedPaths);
+//        }
 
         //see if left or right sensor detect an obstacle
-        switch(giveNewSafeSpot(x, y, notAllowedPaths)){
-          case (GO_FORWARD):{
-            state = 0;
-            break;
-          }
-          case (GO_LEFT):{
-            state = ROTATE_90_LEFT_STATE;
-            break;
-          }
-          case (GO_RIGHT):{
-            //rotate right 90
-            state = ROTATE_90_RIGHT_STATE;
-            break;
-          }
-          case(GO_REVERSE):{
-            //need to code state
-            break;
-          }
-         }
+//        switch(internalMap.giveNewSafeSpot(x, y, notAllowedPaths)){
+//          case (GO_FORWARD):{
+//            state = 0;
+//            break;
+//          }
+//          case (GO_LEFT):{
+//            state = ROTATE_90_LEFT_STATE;
+//            break;
+//          }
+//          case (GO_RIGHT):{
+//            //rotate right 90
+//            state = ROTATE_90_RIGHT_STATE;
+//            break;
+//          }
+//          case(GO_REVERSE):{
+//            //need to code state
+//            break;
+//          }
+//         }
 
-        Serial.println("leftDist:");
-        Serial.println(leftDist);
-        Serial.println("rightDist:");
-        Serial.println(rightDist);
+//        Serial.println("leftDist:");
+//        Serial.println(leftDist);
+//        Serial.println("rightDist:");
+//        Serial.println(rightDist);
         //detect an obstacle on left side sensor
 
-        else {
-            //no obstacle, no useful flame readings,  go forward, take a step
-            state = 0;
-        }
-        break;
+      break;
     } //end case 6
 
 //    case 7: //rotate left 45 degrees
@@ -299,7 +317,9 @@ void loop()
     {
       //rotating right
       mc.rotateRight();
-
+      servoController.doServoStep();
+      
+      Serial.println("state 10");
       if (analogRead(FRONT_FLAME_SENSOR) < 750){
         leftEncoder.write(0);
         Serial.println("completed 45 degree right rotation.");
@@ -309,6 +329,7 @@ void loop()
 
       break;
     }
+
     } //end switch statement
 } // end loop()
 

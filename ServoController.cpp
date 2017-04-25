@@ -1,9 +1,12 @@
 #include "ServoController.h"
 
 ServoController::ServoController(){
-    fanServo.attach(SERVO_PIN);
 }
 
+void ServoController::init(){
+    fanServo.attach(SERVO_PIN);
+
+}
 void ServoController::doServoStep(){
      //handle servo rotation
     if (servoValue > 120) {
@@ -19,6 +22,11 @@ void ServoController::doServoStep(){
         servoValue -= SERVO_STEP;
     }
     fanServo.write(servoValue);
-    //  Serial.println("writing servo value:");
-    //  Serial.println(servoValue);
+//    Serial.println("writing servo value:");
+//    Serial.println(servoValue);
 }
+
+void ServoController::write(int val){
+  fanServo.write(val);
+}
+
