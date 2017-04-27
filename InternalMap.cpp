@@ -3,6 +3,39 @@
 InternalMap::InternalMap(){
 
 }
+
+void InternalMap::updateStep(int &x, int &y, int direction){
+  Serial.println("x before:");
+  Serial.println(x);
+  Serial.println("y before:");
+  Serial.println(y);
+  Serial.println("direction:");
+  Serial.println(direction);
+  
+  
+  switch(direction){
+    case NORTH:{
+      y +=1;
+      break;
+    }
+    case EAST:{
+      x -=1;
+      break;
+    }
+    case SOUTH:{
+      y -=1 ;
+      break;
+    }
+    case WEST:{
+      x += 1;
+      break;
+    }
+  }
+  Serial.println("x after:");
+  Serial.println(x);
+  Serial.println("y after:");
+  Serial.println(y);
+}
 //given a spot and paths you cannot go, give me a spot I have not
 //visited before
 //int InternalMap::giveNewSafeSpot(int x, int y, char notAllowedPaths){
@@ -149,36 +182,60 @@ InternalMap::InternalMap(){
 //	}
 //}
 
-void InternalMap::updateStep(int &x, int &y, int direction){
-  Serial.println("x before:");
-  Serial.println(x);
-  Serial.println("y before:");
-  Serial.println(y);
-  Serial.println("direction:");
-  Serial.println(direction);
-  
-  
-  switch(direction){
-    case NORTH:{
-      y +=1;
-      break;
-    }
-    case EAST:{
-      x -=1;
-      break;
-    }
-    case SOUTH:{
-      y -=1 ;
-      break;
-    }
-    case WEST:{
-      x += 1;
-      break;
-    }
-  }
-  Serial.println("x after:");
-  Serial.println(x);
-  Serial.println("y after:");
-  Serial.println(y);
-}
+
+
+/**
+ * //        if (leftDist < SIDE_LAZER_THRESHOLD) {
+//          Serial.println("Because of left sensor obstacle");
+//          
+//          if(notAllowedPaths == 'B'){
+//            notAllowedPaths = 'E';
+//          }
+//          else{
+//            notAllowedPaths = 'C';
+//          }
+//          Serial.println(notAllowedPaths);
+//
+//        }
+//        else if (rightDist < SIDE_LAZER_THRESHOLD) {
+//            Serial.println("Because of left sensor obstacle");
+//
+//            if (notAllowedPaths == 'A') // all allowed
+//              notAllowedPaths = 'D';
+//            else if(notAllowedPaths == 'B')
+//              notAllowedPaths = 'F';
+//            else if (notAllowedPaths == 'C')
+//              notAllowedPaths = 'G';
+//            else if (notAllowedPaths == 'E')
+//              notAllowedPaths = 'H';
+//            Serial.println(notAllowedPaths);
+//        }
+
+        //see if left or right sensor detect an obstacle
+//        switch(internalMap.giveNewSafeSpot(x, y, notAllowedPaths)){
+//          case (GO_FORWARD):{
+//            state = 0;
+//            break;
+//          }
+//          case (GO_LEFT):{
+//            state = ROTATE_90_LEFT_STATE;
+//            break;
+//          }
+//          case (GO_RIGHT):{
+//            //rotate right 90
+//            state = ROTATE_90_RIGHT_STATE;
+//            break;
+//          }
+//          case(GO_REVERSE):{
+//            //need to code state
+//            break;
+//          }
+//         }
+
+//        Serial.println("leftDist:");
+//        Serial.println(leftDist);
+//        Serial.println("rightDist:");
+//        Serial.println(rightDist);
+**/
+
 
